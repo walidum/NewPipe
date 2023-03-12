@@ -176,7 +176,6 @@
     <string name="settings_file_replacement_character_title">نویسه جایگزین</string>
     <string name="charset_letters_and_digits">حروف و اعداد</string>
     <string name="charset_most_special_characters">مهم‌ترین نویسه‌های خاص</string>
-    <string name="toast_no_player">کاره‌ای برای پخش این پرونده نصب نشده است</string>
     <string name="title_activity_about">درباره نیوپایپ</string>
     <string name="tab_about">درباره و سوالات‌متداول</string>
     <string name="tab_licenses">پروانه‌ها</string>
@@ -726,4 +725,8 @@
     <string name="fast_mode">حالت سریع</string>
     <string name="app_update_available_notification_text">ضربه برای بارگیری %s</string>
     <string name="app_update_unavailable_toast">از جدیدترین نگارش نیوپایپ استفاده می‌کنید</string>
+    <string name="night_theme_available">این گزینه تنها هنگامی موجود است که %s به عنوان زمینه گزیده باشد</string>
+    <string name="card">کارت</string>
+    <string name="msg_failed_to_copy">شکست در رونوشت به تخته‌گیره</string>
+    <string name="unset_playlist_thumbnail">ناتنظیم بندانگشتی ثابت</string>
 </resources>

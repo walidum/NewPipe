@@ -242,7 +242,6 @@
     <string name="dismiss">Avfärda</string>
     <string name="rename">Byt namn</string>
     <string name="one_item_deleted">1 objekt borttaget.</string>
-    <string name="toast_no_player">Ingen app installerad för att spela upp filen</string>
     <string name="privacy_policy_title">NewPipes sekretesspolicy</string>
     <string name="privacy_policy_encouragement">NewPipe-projektet tar din integritet på största allvar. Appen samlar därför inte in några uppgifter utan ditt medgivande.
 \nNewPipes sekretesspolicy förklarar i detalj vad för data som skickas och lagras när du skickar en kraschrapport.</string>
@@ -726,4 +725,10 @@
     <string name="fast_mode">Snabbt läge</string>
     <string name="app_update_unavailable_toast">Du använder den senaste versionen av NewPipe</string>
     <string name="app_update_available_notification_text">Tryck för att ladda ner %s</string>
+    <string name="night_theme_available">Det här alternativet är endast tillgängligt om %s har valts som Tema</string>
+    <string name="unset_playlist_thumbnail">Inaktivera permanent miniatyrbild</string>
+    <string name="msg_failed_to_copy">Det gick inte att kopiera till urklipp</string>
+    <string name="card">Kort</string>
+    <string name="playlist_add_stream_success_duplicate">Dubblett tillagd %d gång(er)</string>
+    <string name="duplicate_in_playlist">Spellistor som är gråmarkerade innehåller redan det här objektet.</string>
 </resources>

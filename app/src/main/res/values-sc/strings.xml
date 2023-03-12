@@ -109,7 +109,6 @@
     <string name="copyright">© %1$s de %2$s cun litzèntzia %3$s</string>
     <string name="title_licenses">Litzèntzias de tertzas partes</string>
     <string name="title_activity_about">In subra de NewPipe</string>
-    <string name="toast_no_player">Peruna aplicatzione installada pro pòdere riproduire custu documentu</string>
     <string name="charset_most_special_characters">Majoria de sos caràteres ispetziales</string>
     <string name="charset_letters_and_digits">Lìteras e tzifras</string>
     <string name="settings_file_replacement_character_title">Caràtere de remplasamentu</string>
@@ -722,4 +721,14 @@
     <string name="faq_description">Si ses tenende problemas impreende s\'aplicatzione assegura·ti de consultare custas rispostas a preguntas fitianas!</string>
     <string name="faq">Pòmpia in su situ web</string>
     <string name="sort">Òrdina</string>
+    <string name="app_update_available_notification_text">Toca pro iscarrigare %s</string>
+    <string name="fast_mode">Modalidade lestra</string>
+    <string name="import_subscriptions_hint">Importa o esporta iscritziones dae su menù a 3 puntos</string>
+    <string name="app_update_unavailable_toast">Ses impreende s\'ùrtima versione de NewPipe</string>
+    <string name="night_theme_available">Custa optzione est a disponimentu petzi si %s est seletzionadu comente tema</string>
+    <string name="card">Carta</string>
+    <string name="msg_failed_to_copy">Còpia in punta de billete fallida</string>
+    <string name="unset_playlist_thumbnail">Disativa sa miniadura permanente</string>
+    <string name="duplicate_in_playlist">Sas iscalitas in colore murru tenent giai custu elementu.</string>
+    <string name="playlist_add_stream_success_duplicate">Duplicadu annantu %d borta(s)</string>
 </resources>

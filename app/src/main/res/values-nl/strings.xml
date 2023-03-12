@@ -299,7 +299,6 @@
     <string name="no_streams_available_download">Geen streams beschikbaar voor downloaden</string>
     <string name="caption_setting_title">Ondertitels</string>
     <string name="caption_setting_description">Ondertitelgrootte en -achtergrondstijlen wijzigen. Vereist een herstart van de app</string>
-    <string name="toast_no_player">Er is geen app geïnstalleerd die dit bestand kan afspelen</string>
     <string name="clear_views_history_title">Kijkgeschiedenis wissen</string>
     <string name="clear_views_history_summary">Verwijdert de geschiedenis van bekeken video\'s en afspeelposities</string>
     <string name="delete_view_history_alert">De gehele kijkgeschiedenis wissen\?</string>
@@ -726,4 +725,10 @@
     <string name="import_subscriptions_hint">Importeer of exporteer abonnementen vanuit het 3-punten menu</string>
     <string name="app_update_unavailable_toast">U heeft de laatste versie van NewPipe</string>
     <string name="app_update_available_notification_text">Klik om %s te downloaden</string>
+    <string name="msg_failed_to_copy">Kon niet naar klembord kopiëren</string>
+    <string name="night_theme_available">Deze instelling is alleen beschikbaar als %s als Thema ingesteld is</string>
+    <string name="card">Kaart</string>
+    <string name="unset_playlist_thumbnail">Miniatuur niet ingesteld</string>
+    <string name="duplicate_in_playlist">De afspeellijsten die grijs zijn, bevatten dit item al.</string>
+    <string name="playlist_add_stream_success_duplicate">Duplicaat is %d tijd(en) toegevoegd</string>
 </resources>
