@@ -36,7 +36,7 @@
     <string name="show_higher_resolutions_title">Покажи по-високи резолюции</string>
     <string name="show_higher_resolutions_summary">Само някои устройства могат да възпроизвеждат 2K/4K видео</string>
     <string name="play_with_kodi_title">Въпроизвеждане с Kodi</string>
-    <string name="kore_not_found">Инсталиране на липсващото приложение \"Kore\"\?</string>
+    <string name="kore_not_found">Инсталиране на липсващото приложение \"Kode\"\?</string>
     <string name="show_play_with_kodi_title">Покажи „Възпроизвеждане с Kodi“</string>
     <string name="show_play_with_kodi_summary">Показване на опция за възпроизвеждане на видео чрез „Kodi media center“</string>
     <string name="play_audio">Аудио</string>
@@ -151,7 +151,6 @@
     <string name="controls_add_to_playlist_title">Добавяне към</string>
     <string name="use_inexact_seek_title">Използвай бързо, но неточно превъртане</string>
     <string name="use_inexact_seek_summary">По-бързо превъртане с по-ниска прецизност. Превъртане с по 5, 15 или 25 секунди няма да работи с тази опция</string>
-    <string name="download_thumbnail_title">Зареждай миниатюри</string>
     <string name="thumbnail_cache_wipe_complete_notice">Кеш-паметта с изображения е изтрита</string>
     <string name="metadata_cache_wipe_title">Изтрий кешираните метаданни</string>
     <string name="metadata_cache_wipe_summary">Премахни всички метаданни за уебстраници от кеш-паметта</string>
@@ -177,7 +176,6 @@
     <string name="clear_search_history_summary">Изтрива историята с въвежданите за търсене ключови думи</string>
     <string name="delete_search_history_alert">Изтрий цялата история на търсенията\?</string>
     <string name="search_history_deleted">Историята на търсенията е изтрита.</string>
-    <string name="youtube_signature_deobfuscation_error">URL подписът на клипа не можа да бъде дешифрован</string>
     <string name="external_player_unsupported_link_type">Външните плейъри не поддържат този вид линкове</string>
     <string name="invalid_directory">Невалидна директория</string>
     <string name="invalid_source">Невалиден файл или източник на съдържание</string>
@@ -205,7 +203,6 @@
     <string name="read_privacy_policy">Прочетете нашата политика за поверителност</string>
     <string name="app_license_title">Лицензът на NewPipe</string>
     <string name="no_player_found_toast">Липсва стрийм плейър (можете да изтеглите VLC, за да пуснете стрийма).</string>
-    <string name="download_thumbnail_summary">Изключете, за да спрете зареждането на всички миниатюри, спестявайки трафик и памет. При промяна на тази настройка, текущата кеш-памет на изображенията ще бъде изтрита</string>
     <string name="show_hold_to_append_summary">Показвай подсказка при избор на фоновия режим или режим в прозорец от екрана за „Детайли“ към видео</string>
     <string name="clear_views_history_summary">Изтрива историята на възпроизвежданите стриймове и позицията на възпроизвеждането</string>
     <string name="video_streams_empty">Не са намерени видео стриймове</string>
@@ -335,10 +332,6 @@
     <string name="enable_disposed_exceptions_summary">Насили докладването на неизпращаеми Rx изключения извън фрагмента или кръговрата на активност след приключване</string>
     <string name="unhook_checkbox">Откачи (може да предизвика промени)</string>
     <string name="unsubscribe">Отписване</string>
-    <string name="volume_gesture_control_title">Контрол на звука с жестове</string>
-    <string name="volume_gesture_control_summary">Използвай жестове за контрол на звука</string>
-    <string name="brightness_gesture_control_title">Контрол на яркостта с жестове</string>
-    <string name="brightness_gesture_control_summary">Използвай жестове за контрол на яркостта</string>
     <string name="file_deleted">Файлът е изтрит</string>
     <string name="events">Събития</string>
     <string name="show_comments_title">Показвай коментари</string>
@@ -428,7 +421,6 @@
     <string name="metadata_support">Поддръжка</string>
     <string name="metadata_host">Сървър</string>
     <string name="metadata_privacy_public">Публичен</string>
-    <string name="metadata_thumbnail_url">Миниатюра линк</string>
     <string name="app_language_title">Език на интерфейса</string>
     <string name="mute">Спри звука</string>
     <string name="post_processing">пост-обработката</string>
@@ -453,7 +445,7 @@
     <string name="detail_heart_img_view_description">Отбелязан със сърце от автора</string>
     <string name="conferences">Конференции</string>
     <string name="most_liked">Най-харесвани</string>
-    <string name="recaptcha_done_button">Готово</string>
+    <string name="done">Готово</string>
     <string name="comments_tab_description">Коментари</string>
     <string name="localization_changes_requires_app_restart">Езикът ще се смени след рестартиране на приложението</string>
     <string name="metadata_privacy_unlisted">Скрит</string>
@@ -550,7 +542,6 @@
     <string name="show_image_indicators_summary">Показвай цветни Picasso-панделки в горната част на изображенията като индикатор за техния произход (червен – от мрежата, син – от диска и червен – от паметта)</string>
     <string name="auto_device_theme_title">Автоматична (тази на устройството)</string>
     <string name="notification_scale_to_square_image_summary">Мащабиране на миниатюрата в известието от 16:9 към 1:1 формат (възможни са изкривявания)</string>
-    <string name="feed_toggle_show_played_items">Покажи гледани</string>
     <string name="select_a_playlist">Избете плейлист</string>
     <string name="notifications">Известия</string>
     <string name="clear_cookie_title">Изчистване на бисквитките от reCAPTCHA</string>
@@ -563,4 +554,5 @@
     <string name="unknown_format">Неизвестен формат</string>
     <string name="recently_added">Наскоро добавено</string>
     <string name="notification_action_buffering">Буфериране</string>
+    <string name="crash_the_player">Разбийте плейъра</string>
 </resources>

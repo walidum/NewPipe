@@ -36,7 +36,7 @@
     <string name="show_higher_resolutions_title">Prikaži veće rezolucije</string>
     <string name="show_higher_resolutions_summary">Samo neki uređaji podržavaju reprodukciju 2K/4K videa</string>
     <string name="play_with_kodi_title">Reproduciraj s Kodijem</string>
-    <string name="kore_not_found">Instalirati nedostajući Kore program\?</string>
+    <string name="kore_not_found">Instalirati nedostajući Kode program\?</string>
     <string name="show_play_with_kodi_title">Prikaži opciju „Reproduciraj pomoću Kodija”</string>
     <string name="show_play_with_kodi_summary">Prikaži opciju za reproduciranje videozapisa putem Kodija</string>
     <string name="play_audio">Audiosnimka</string>
@@ -77,7 +77,6 @@
     <string name="general_error">Greška</string>
     <string name="network_error">Greška u mreži</string>
     <string name="could_not_load_thumbnails">Nije bilo moguće učitati sve sličice</string>
-    <string name="youtube_signature_deobfuscation_error">Nije bilo moguće dešifrirati URL potpis videozapisa</string>
     <string name="parsing_error">Nije bilo moguće obraditi stranicu</string>
     <string name="content_not_available">Sadržaj nije dostupan</string>
     <string name="could_not_setup_download_menu">Nije bilo moguće postaviti izbornik za preuzimanje</string>
@@ -218,7 +217,6 @@
     <string name="show_info">Prikaži informacije</string>
     <string name="tab_bookmarks">Zabilježene playliste</string>
     <string name="controls_add_to_playlist_title">Dodaj u</string>
-    <string name="download_thumbnail_title">Učitaj sličice</string>
     <string name="thumbnail_cache_wipe_complete_notice">Slikovna predmemorija obrisana</string>
     <string name="metadata_cache_wipe_title">Izbriši metapodatke iz predmemorije</string>
     <string name="channels">Kanali</string>
@@ -312,15 +310,10 @@
     <string name="app_update_available_notification_title">Dostupna je nova verzija za NewPipe!</string>
     <string name="download_failed">Preuzimanje nije uspjelo</string>
     <string name="show_error">Prikaži pogrešku</string>
-    <string name="download_thumbnail_summary">Isključi za sprečavanje učitavanja sličica, čime se štedi korištenje podataka i memorije. Promjene čiste predmemoriju slika radne memorije i diska</string>
     <string name="metadata_cache_wipe_summary">Izbriši sve podatke web-stranica iz predmemorije</string>
     <string name="metadata_cache_wipe_complete_notice">Metapodaci su izbrisani</string>
     <string name="auto_queue_title">Automatski dodaj sljedeći stream u popisa izvođenja</string>
     <string name="auto_queue_summary">Nastavi završavati (ne ponavljajući) popis reprodukcija dodavanjem povezanog streama</string>
-    <string name="volume_gesture_control_title">Kontrola glasnoće pomoću gesti</string>
-    <string name="volume_gesture_control_summary">Koristi geste za upravljanje glasnoćom playera</string>
-    <string name="brightness_gesture_control_title">Kontrola svjetline pomoću gesti</string>
-    <string name="brightness_gesture_control_summary">Koristi gesture za upravljanje svjetlinom playera</string>
     <string name="default_content_country_title">Zadana zemlja sadržaja</string>
     <string name="settings_category_debug_title">Otkrivanje grešaka</string>
     <string name="app_update_notification_channel_name">Obavijest o novoj verziji programa</string>
@@ -436,7 +429,7 @@
     <string name="error_insufficient_storage">Memorija uređaja je popunjena</string>
     <string name="most_liked">Najomiljeniji</string>
     <string name="subtitle_activity_recaptcha">Pritisni „Gotovo” kad je riješeno</string>
-    <string name="recaptcha_done_button">Gotovo</string>
+    <string name="done">Gotovo</string>
     <string name="infinite_videos">∞ videa</string>
     <string name="more_than_100_videos">Više od 100 videa</string>
     <string name="error_report_open_issue_button_text">Prijavi grešku na GitHub-u</string>
@@ -612,7 +605,7 @@
     <string name="recaptcha_solve">Riješi</string>
     <string name="night_theme_title">Noćna tema</string>
     <string name="show_channel_details">Prikaži detalje kanala</string>
-    <string name="disable_media_tunneling_summary">Isključi tuneliranje medija ako doživiš crni ekran ili isprekidanu reprodukciju videa</string>
+    <string name="disable_media_tunneling_summary">Isključi tuneliranje medija ako doživiš crni ekran ili isprekidanu reprodukciju videa.</string>
     <string name="disable_media_tunneling_title">Iskljuci medija tuneling</string>
     <string name="off">Isklj.</string>
     <string name="on">Uklj.</string>
@@ -622,7 +615,6 @@
     <string name="metadata_privacy_private">Privatno</string>
     <string name="metadata_privacy_unlisted">Nenavedeno</string>
     <string name="metadata_privacy_public">Javno</string>
-    <string name="metadata_thumbnail_url">URL sličice</string>
     <string name="metadata_host">Poslužitelj</string>
     <string name="metadata_support">Podrška</string>
     <string name="metadata_language">Jezik</string>
@@ -633,7 +625,6 @@
     <string name="description_select_disable">Onemogući biranje teksta u opisu</string>
     <string name="description_select_enable">Omogući biranje teksta u opisu</string>
     <string name="account_terminated">Račun ukinut</string>
-    <string name="feed_toggle_show_played_items">Prikaži pogledane stavke</string>
     <string name="feed_load_error_terminated">Autorov račun je ukinut.
 \nNewPipe ubuduće neće moći učitavati ovaj feed.
 \nŽeliš li otkazati pretplatu na ovaj kanal\?</string>
@@ -725,9 +716,6 @@
     <string name="no_audio_streams_available_for_external_players">Nijedan stream audiosnimaka nije dostupan za vanjske playere</string>
     <string name="no_video_streams_available_for_external_players">Nijedan video stream nije dostupan za vanjske playere</string>
     <string name="select_quality_external_players">Odaberi kvalitetu za vanjske playere</string>
-    <string name="feed_toggle_show_future_items">Prikaži buduće stavke</string>
     <string name="no_appropriate_file_manager_message_android_10">Za ovu radnju nije pronađen odgovrajući upravljač datoteka.
 \nInstaliraj „Storage Access Framework” kompatibilni upravljač datoteka</string>
-    <string name="feed_toggle_hide_future_items">Sakrij buduće stavke</string>
-    <string name="feed_toggle_hide_played_items">Sakrij pogledane stavke</string>
 </resources>

@@ -43,7 +43,7 @@
     <string name="show_higher_resolutions_title">Vis højere opløsninger</string>
     <string name="show_higher_resolutions_summary">Kun nogle enheder kan afspille 2K-/4K-videoer</string>
     <string name="play_with_kodi_title">Afspil med Kodi</string>
-    <string name="kore_not_found">Installer manglede Kore-app\?</string>
+    <string name="kore_not_found">Installer manglede Kode-app\?</string>
     <string name="show_play_with_kodi_title">Vis valgmuligheden \"Afspil med Kodi\"</string>
     <string name="show_play_with_kodi_summary">Vis en knap til at afspille en video via Kodi-mediecenteret</string>
     <string name="play_audio">Lyd</string>
@@ -57,18 +57,12 @@
     <string name="popup_remember_size_pos_summary">Husk sidste størrelse og placering af pop op-afspiller</string>
     <string name="use_inexact_seek_title">Brug hurtig og upræcis søgning</string>
     <string name="use_inexact_seek_summary">Upræcis søgning lader afspilleren finde placeringer hurtigere, men mindre præcist. Søgninger på 5, 15 eller 25 sekunder fungerer ikke med denne indstilling slået til</string>
-    <string name="download_thumbnail_title">Indlæs miniaturebilleder</string>
-    <string name="download_thumbnail_summary">Slå fra for at undgå indlæsning af billeder, hvorved der spares data og hukommelse. Ændringer sletter billedcachen i både ram og lager</string>
     <string name="thumbnail_cache_wipe_complete_notice">Billedcache slettet</string>
     <string name="metadata_cache_wipe_title">Slet metadata-cachen</string>
     <string name="metadata_cache_wipe_summary">Slet alle websidedata fra cachen</string>
     <string name="metadata_cache_wipe_complete_notice">Metadata-cache slettet</string>
     <string name="auto_queue_title">Føj automatisk næste stream til køen</string>
     <string name="auto_queue_summary">Fortsæt en afspilningskø, der afsluttes (ikke-gentagende), ved at tilføje en lignende stream</string>
-    <string name="volume_gesture_control_title">Juster lydstyrke ved hjælp af fingerbevægelser</string>
-    <string name="volume_gesture_control_summary">Brug fingerbevægelser til at kontrollere afspillerens lydstyrke</string>
-    <string name="brightness_gesture_control_title">Styr lysstyrken med fingerbevægelser</string>
-    <string name="brightness_gesture_control_summary">Brug fingerbevægelser til at justere afspillerens lysstyrke</string>
     <string name="show_search_suggestions_title">Søgeforslag</string>
     <string name="show_search_suggestions_summary">Vælg forslagene, der vises, når der søges</string>
     <string name="enable_search_history_title">Søgehistorik</string>
@@ -142,7 +136,6 @@
     <string name="download_to_sdcard_error_message">Det er endnu ikke muligt at downloade til et eksternt SD-kort. Nulstil download-mappens placering\?</string>
     <string name="network_error">Netværksfejl</string>
     <string name="could_not_load_thumbnails">Kunne ikke indlæse alle miniaturebilleder</string>
-    <string name="youtube_signature_deobfuscation_error">Kunne ikke dekryptere URL-signatur for video</string>
     <string name="parsing_error">Kunne ikke analysere websted</string>
     <string name="content_not_available">Indhold ikke tilgængeligt</string>
     <string name="could_not_setup_download_menu">Kunne ikke oprette downloadmenu</string>
@@ -163,7 +156,7 @@
     <string name="restore_defaults">Genskab standardindstillinger</string>
     <string name="restore_defaults_confirmation">Vil du genoprette standardindstillingerne\?</string>
     <string name="sorry_string">Undskyld, dette skulle ikke være sket.</string>
-    <string name="error_report_button_text">Rapporter denne fejl via e-mail</string>
+    <string name="error_report_button_text">Rapporter via e-mail</string>
     <string name="error_snackbar_message">Beklager, noget gik galt.</string>
     <string name="error_snackbar_action">Rapporter</string>
     <string name="what_device_headline">Information:</string>
@@ -462,7 +455,6 @@
         <item quantity="one">Download fuldført</item>
         <item quantity="other">%s downloads fuldført</item>
     </plurals>
-    <string name="progressive_load_interval_summary">Ændr indlæsningsintervallets størrelse (som nu er på %s). En lavere værdi kan øge videoindlæsningshastigheden. Ændringer kræver en genstart af afspiller</string>
     <string name="clear_queue_confirmation_description">Den aktive spilleliste bliver udskiftet</string>
     <string name="clear_queue_confirmation_summary">Hvis du skifter fra en spiller til en anden, kan din kø blive erstattet</string>
     <string name="show_meta_info_title">Vis metainformation</string>
@@ -551,7 +543,6 @@
     <string name="feed_update_threshold_summary">Tid siden sidste opdatering for at et abonnoment bliver forældet - %s</string>
     <string name="feed_update_threshold_option_always_update">Altid opdater</string>
     <string name="feed_group_dialog_select_subscriptions">Vælg abonnementer</string>
-    <string name="feed_toggle_show_played_items">Vis sete elementer</string>
     <string name="georestricted_content">Dette indhold er ikke tilgængeligt i dit land.</string>
     <string name="video_detail_by">Af %s</string>
     <string name="remove_watched_popup_warning">Videoer, der er blevet set før og efter, at de er blevet tilføjet til spillelisten, vil blive fjernet.
@@ -629,7 +620,7 @@
     <string name="most_liked">Mest likede</string>
     <string name="error_unable_to_load_comments">Kunne ikke indlæse kommentarer</string>
     <string name="default_kiosk_page_summary">Standard Kiosk</string>
-    <string name="recaptcha_done_button">Færdig</string>
+    <string name="done">Færdig</string>
     <string name="subtitle_activity_recaptcha">Tryk på \"Færdig\" når den er løst</string>
     <string name="no_comments">Ingen kommentarer</string>
     <string name="infinite_videos">∞ videoer</string>
@@ -677,10 +668,8 @@
 \nAktiver systemet mappevælger (SAF), hvis du vil downloade til et eksternt SD-kort</string>
     <string name="show_original_time_ago_summary">Originaltekster fra tjenester vil være synlige i stream-emner</string>
     <string name="no_video_streams_available_for_external_players">Ingen videostreams er tilgængelige for eksterne afspillere</string>
-    <string name="metadata_thumbnail_url">URL til miniaturebillede</string>
     <string name="off">Fra</string>
     <string name="tablet_mode_title">Tablet-tilstand</string>
-    <string name="feed_toggle_hide_future_items">Skjul fremtidige elementer</string>
     <string name="youtube_music_premium_content">Denne video er kun tilgængelig for YouTube Music Premium-medlemmer, så den kan ikke streames eller downloades af NewPipe.</string>
     <string name="downloads_storage_use_saf_summary">\"Storage Access Framework\" gør det muligt at downloade til et eksternt SD-kort</string>
     <string name="enable_disposed_exceptions_summary">Fremtving indberetning af ikke-leverbare Rx-undtagelser uden for fragmentets eller aktivitetens livscyklus efter bortskaffelse</string>
@@ -710,7 +699,6 @@
     <string name="app_update_unavailable_toast">Du kører den nyeste version af NewPipe</string>
     <string name="new_seek_duration_toast">På grund af ExoPlayer-begrænsninger blev søgetiden sat til %d sekunder</string>
     <string name="feed_group_show_only_ungrouped_subscriptions">Vis kun ikke-grupperede abonnementer</string>
-    <string name="feed_toggle_hide_played_items">Skjul sete elementer</string>
     <string name="playlist_page_summary">Side med spillelister</string>
     <string name="select_night_theme_toast">Du kan vælge dit foretrukne nattema nedenfor</string>
     <string name="night_theme_summary">Vælg dit foretrukne nattema - %s</string>
@@ -724,6 +712,10 @@
     <string name="toggle_all">Skift alle</string>
     <string name="no_audio_streams_available_for_external_players">Ingen lydstreams er tilgængelige for eksterne afspillere</string>
     <string name="select_quality_external_players">Vælg kvalitet til eksterne afspillere</string>
-    <string name="feed_toggle_show_future_items">Vis fremtidige elementer</string>
     <string name="sort">Sortér</string>
+    <string name="ignore_hardware_media_buttons_title">Ignorer hardware medie knapper</string>
+    <string name="ignore_hardware_media_buttons_summary">Brugbart f.eks. hvis du bruger et headset med ødelagte fysiske knapper</string>
+    <string name="duplicate_in_playlist">Playlists der er grået ud, indeholder allerede dette objekt.</string>
+    <string name="unset_playlist_thumbnail">Inaktiver permanent thumbnail</string>
+    <string name="msg_failed_to_copy">Fejlede at kopiere til udklipsholderen</string>
 </resources>

@@ -5,7 +5,6 @@ import static org.schabi.newpipe.ktx.ViewUtils.animate;
 import static org.schabi.newpipe.util.ThemeHelper.shouldUseGridLayout;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.InputType;
@@ -23,7 +22,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
@@ -43,16 +41,18 @@ import org.schabi.newpipe.databinding.PlaylistControlBinding;
 import org.schabi.newpipe.error.ErrorInfo;
 import org.schabi.newpipe.error.UserAction;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
+import org.schabi.newpipe.fragments.MainFragment;
+import org.schabi.newpipe.fragments.list.playlist.PlaylistControlViewHolder;
 import org.schabi.newpipe.info_list.dialog.InfoItemDialog;
 import org.schabi.newpipe.info_list.dialog.StreamDialogDefaultEntry;
 import org.schabi.newpipe.local.BaseLocalListFragment;
 import org.schabi.newpipe.local.history.HistoryRecordManager;
-import org.schabi.newpipe.player.PlayerType;
 import org.schabi.newpipe.player.playqueue.PlayQueue;
 import org.schabi.newpipe.player.playqueue.SinglePlayQueue;
 import org.schabi.newpipe.util.Localization;
 import org.schabi.newpipe.util.NavigationHelper;
 import org.schabi.newpipe.util.OnClickGesture;
+import org.schabi.newpipe.util.PlayButtonHelper;
 import org.schabi.newpipe.util.external_communication.ShareUtils;
 
 import java.util.ArrayList;
@@ -70,8 +70,9 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 
-public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistStreamEntry>, Void> {
-    // Save the list 10 seconds after the last change occurred
+public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistStreamEntry>, Void>
+        implements PlaylistControlViewHolder {
+    /** Save the list 10 seconds after the last change occurred. */
     private static final long SAVE_DEBOUNCE_MILLIS = 10000;
     private static final int MINIMUM_INITIAL_DRAG_VELOCITY = 12;
     @State
@@ -92,12 +93,19 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
     private PublishSubject<Long> debouncedSaveSignal;
     private CompositeDisposable disposables;
 
-    /* Has the playlist been fully loaded from db */
+    /** Whether the playlist has been fully loaded from db. */
     private AtomicBoolean isLoadingComplete;
-    /* Has the playlist been modified (e.g. items reordered or deleted) */
+    /** Whether the playlist has been modified (e.g. items reordered or deleted) */
     private AtomicBoolean isModified;
-    /* Flag to prevent simultaneous rewrites of the playlist */
+    /** Flag to prevent simultaneous rewrites of the playlist. */
     private boolean isRewritingPlaylist = false;
+
+    /**
+     * The pager adapter that the fragment is created from when it is used as frontpage, i.e.
+     * {@link #useAsFrontPage} is {@link true}.
+     */
+    @Nullable
+    private MainFragment.SelectedTabsPagerAdapter tabsPagerAdapter = null;
 
     public static LocalPlaylistFragment getInstance(final long playlistId, final String name) {
         final LocalPlaylistFragment instance = new LocalPlaylistFragment();
@@ -156,6 +164,17 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
         headerBinding.playlistTitleView.setSelected(true);
 
         return headerBinding;
+    }
+
+    /**
+     * <p>Commit changes immediately if the playlist has been modified.</p>
+     *  Delete operations and other modifications will be committed to ensure that the database
+     *  is up to date, e.g. when the user adds the just deleted stream from another fragment.
+     */
+    public void commitChanges() {
+        if (isModified != null && isModified.get()) {
+            saveImmediate();
+        }
     }
 
     @Override
@@ -266,14 +285,10 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
         if (itemListAdapter != null) {
             itemListAdapter.unsetSelectedListener();
         }
-        if (playlistControlBinding != null) {
-            playlistControlBinding.playlistCtrlPlayBgButton.setOnClickListener(null);
-            playlistControlBinding.playlistCtrlPlayAllButton.setOnClickListener(null);
-            playlistControlBinding.playlistCtrlPlayPopupButton.setOnClickListener(null);
 
-            headerBinding = null;
-            playlistControlBinding = null;
-        }
+        headerBinding = null;
+        playlistControlBinding = null;
+
 
         if (databaseSubscription != null) {
             databaseSubscription.cancel();
@@ -294,6 +309,9 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
         }
         if (disposables != null) {
             disposables.dispose();
+        }
+        if (tabsPagerAdapter != null) {
+            tabsPagerAdapter.getLocalPlaylistFragments().remove(this);
         }
 
         debouncedSaveSignal = null;
@@ -350,7 +368,7 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == R.id.menu_item_share_playlist) {
-            sharePlaylist();
+            createShareConfirmationDialog();
         } else if (item.getItemId() == R.id.menu_item_rename_playlist) {
             createRenameDialog();
         } else if (item.getItemId() == R.id.menu_item_remove_watched) {
@@ -358,14 +376,13 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
                 new AlertDialog.Builder(requireContext())
                         .setMessage(R.string.remove_watched_popup_warning)
                         .setTitle(R.string.remove_watched_popup_title)
-                        .setPositiveButton(R.string.ok,
-                                (DialogInterface d, int id) -> removeWatchedStreams(false))
+                        .setPositiveButton(R.string.ok, (d, id) ->
+                                removeWatchedStreams(false))
                         .setNeutralButton(
                                 R.string.remove_watched_popup_yes_and_partially_watched_videos,
-                                (DialogInterface d, int id) -> removeWatchedStreams(true))
+                                (d, id) -> removeWatchedStreams(true))
                         .setNegativeButton(R.string.cancel,
-                                (DialogInterface d, int id) -> d.cancel())
-                        .create()
+                                (d, id) -> d.cancel())
                         .show();
             }
         } else if (item.getItemId() == R.id.menu_item_remove_duplicates) {
@@ -379,16 +396,33 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
     }
 
     /**
-     * Share the playlist as a newline-separated list of stream URLs.
+     * Shares the playlist as a list of stream URLs if {@code shouldSharePlaylistDetails} is
+     * set to {@code false}. Shares the playlist name along with a list of video titles and URLs
+     * if {@code shouldSharePlaylistDetails} is set to {@code true}.
+     *
+     * @param shouldSharePlaylistDetails Whether the playlist details should be included in the
+     *                                   shared content.
      */
-    public void sharePlaylist() {
+    private void sharePlaylist(final boolean shouldSharePlaylistDetails) {
+        final Context context = requireContext();
+
         disposables.add(playlistManager.getPlaylistStreams(playlistId)
                 .flatMapSingle(playlist -> Single.just(playlist.stream()
                         .map(PlaylistStreamEntry::getStreamEntity)
-                        .map(StreamEntity::getUrl)
+                        .map(streamEntity -> {
+                            if (shouldSharePlaylistDetails) {
+                                return context.getString(R.string.video_details_list_item,
+                                        streamEntity.getTitle(), streamEntity.getUrl());
+                            } else {
+                                return streamEntity.getUrl();
+                            }
+                        })
                         .collect(Collectors.joining("\n"))))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(urlsText -> ShareUtils.shareText(requireContext(), name, urlsText),
+                .subscribe(urlsText -> ShareUtils.shareText(
+                                context, name, shouldSharePlaylistDetails
+                                        ? context.getString(R.string.share_playlist_content_details,
+                                        name, urlsText) : urlsText),
                         throwable -> showUiErrorSnackbar(this, "Sharing playlist", throwable)));
     }
 
@@ -500,36 +534,9 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
         }
         setVideoCount(itemListAdapter.getItemsList().size());
 
-        playlistControlBinding.playlistCtrlPlayAllButton.setOnClickListener(view -> {
-            NavigationHelper.playOnMainPlayer(activity, getPlayQueue());
-            showHoldToAppendTipIfNeeded();
-        });
-        playlistControlBinding.playlistCtrlPlayPopupButton.setOnClickListener(view -> {
-            NavigationHelper.playOnPopupPlayer(activity, getPlayQueue(), false);
-            showHoldToAppendTipIfNeeded();
-        });
-        playlistControlBinding.playlistCtrlPlayBgButton.setOnClickListener(view -> {
-            NavigationHelper.playOnBackgroundPlayer(activity, getPlayQueue(), false);
-            showHoldToAppendTipIfNeeded();
-        });
-        playlistControlBinding.playlistCtrlPlayPopupButton.setOnLongClickListener(view -> {
-            NavigationHelper.enqueueOnPlayer(activity, getPlayQueue(), PlayerType.POPUP);
-            return true;
-        });
-
-        playlistControlBinding.playlistCtrlPlayBgButton.setOnLongClickListener(view -> {
-            NavigationHelper.enqueueOnPlayer(activity, getPlayQueue(), PlayerType.AUDIO);
-            return true;
-        });
+        PlayButtonHelper.initPlaylistControlClickListener(activity, playlistControlBinding, this);
 
         hideLoading();
-    }
-
-    private void showHoldToAppendTipIfNeeded() {
-        if (PreferenceManager.getDefaultSharedPreferences(activity)
-                .getBoolean(getString(R.string.show_hold_to_append_key), true)) {
-            Toast.makeText(activity, R.string.hold_to_append, Toast.LENGTH_SHORT).show();
-        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -560,15 +567,14 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
         dialogBinding.dialogEditText.setSelection(dialogBinding.dialogEditText.getText().length());
         dialogBinding.dialogEditText.setText(name);
 
-        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(getContext())
                 .setTitle(R.string.rename_playlist)
                 .setView(dialogBinding.getRoot())
                 .setCancelable(true)
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.rename, (dialogInterface, i) ->
-                        changePlaylistName(dialogBinding.dialogEditText.getText().toString()));
-
-        dialogBuilder.show();
+                        changePlaylistName(dialogBinding.dialogEditText.getText().toString()))
+                .show();
     }
 
     private void changePlaylistName(final String title) {
@@ -634,15 +640,13 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
     }
 
     private void openRemoveDuplicatesDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-
-        builder.setTitle(R.string.remove_duplicates_title)
+        new AlertDialog.Builder(this.getActivity())
+                .setTitle(R.string.remove_duplicates_title)
                 .setMessage(R.string.remove_duplicates_message)
-                .setPositiveButton(R.string.ok,
-                        (dialog, i) -> removeDuplicatesInPlaylist())
-                .setNeutralButton(R.string.cancel, null);
-
-        builder.create().show();
+                .setPositiveButton(R.string.ok, (dialog, i) ->
+                        removeDuplicatesInPlaylist())
+                .setNeutralButton(R.string.cancel, null)
+                .show();
     }
 
     private void removeDuplicatesInPlaylist() {
@@ -858,7 +862,7 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
         }
     }
 
-    private PlayQueue getPlayQueue() {
+    public PlayQueue getPlayQueue() {
         return getPlayQueue(0);
     }
 
@@ -875,6 +879,30 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
             }
         }
         return new SinglePlayQueue(streamInfoItems, index);
+    }
+
+    /**
+     * Creates a dialog to confirm whether the user wants to share the playlist
+     * with the playlist details or just the list of stream URLs.
+     * After the user has made a choice, the playlist is shared.
+     */
+    private void createShareConfirmationDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.share_playlist)
+                .setMessage(R.string.share_playlist_with_titles_message)
+                .setCancelable(true)
+                .setPositiveButton(R.string.share_playlist_with_titles, (dialog, which) ->
+                    sharePlaylist(/* shouldSharePlaylistDetails= */ true)
+                )
+                .setNegativeButton(R.string.share_playlist_with_list, (dialog, which) ->
+                    sharePlaylist(/* shouldSharePlaylistDetails= */ false)
+                )
+                .show();
+    }
+
+    public void setTabsPagerAdapter(
+            @Nullable final MainFragment.SelectedTabsPagerAdapter tabsPagerAdapter) {
+        this.tabsPagerAdapter = tabsPagerAdapter;
     }
 }
 

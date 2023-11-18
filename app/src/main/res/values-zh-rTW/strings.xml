@@ -20,7 +20,7 @@
     <string name="play_with_kodi_title">用 Kodi 播放</string>
     <string name="show_play_with_kodi_summary">顯示用 Kodi 媒體中心播放影片的選項</string>
     <string name="play_audio">聲音</string>
-    <string name="kore_not_found">未找到 Kore app，是否安裝？</string>
+    <string name="kore_not_found">要安裝缺少的 Kore 應用程式嗎？</string>
     <string name="show_play_with_kodi_title">顯示「用 Kodi 播放」的選項</string>
     <string name="default_audio_format_title">預設音訊格式</string>
     <string name="theme_title">主題</string>
@@ -66,7 +66,6 @@
     <string name="best_resolution">最佳解析度</string>
     <string name="general_error">錯誤</string>
     <string name="could_not_load_thumbnails">無法載入所有縮圖</string>
-    <string name="youtube_signature_deobfuscation_error">無法解析影片 URL 簽章</string>
     <string name="parsing_error">無法解析網站</string>
     <string name="content_not_available">內容無法使用</string>
     <string name="could_not_setup_download_menu">無法設定下載選單</string>
@@ -278,8 +277,6 @@
 \n2. 移至此網址： %1$s 
 \n3. 當被提示時登入帳號 
 \n4. 複製您被重新導向到的個人設定檔網址。</string>
-    <string name="download_thumbnail_title">載入縮圖</string>
-    <string name="download_thumbnail_summary">關閉以防止載入縮圖，減少數據和儲存空間的用量。改變時將清除記憶體和磁碟上的縮圖快取</string>
     <string name="thumbnail_cache_wipe_complete_notice">已抹除圖片快取</string>
     <string name="metadata_cache_wipe_title">抹除已快取的中介資料</string>
     <string name="metadata_cache_wipe_summary">移除所有已快取的網頁資料</string>
@@ -328,10 +325,6 @@
     <string name="users">使用者</string>
     <string name="unsubscribe">取消訂閱</string>
     <string name="tab_choose">選擇分頁</string>
-    <string name="volume_gesture_control_title">音量手勢控制</string>
-    <string name="volume_gesture_control_summary">使用手勢控制播放器音量</string>
-    <string name="brightness_gesture_control_title">亮度手勢控制</string>
-    <string name="brightness_gesture_control_summary">使用手勢控制播放器亮度</string>
     <string name="settings_category_updates_title">更新</string>
     <string name="file_deleted">已刪除檔案</string>
     <string name="app_update_notification_channel_name">應用程式更新通知</string>
@@ -448,7 +441,7 @@
     <string name="app_language_title">應用程式語言</string>
     <string name="systems_language">系統預設值</string>
     <string name="subtitle_activity_recaptcha">解決後請按「完成」</string>
-    <string name="recaptcha_done_button">完成</string>
+    <string name="done">完成</string>
     <string name="videos_string">影片</string>
     <plurals name="seconds">
         <item quantity="other">%d 秒</item>
@@ -592,13 +585,12 @@
     <string name="auto_device_theme_title">自動（裝置佈景主題）</string>
     <string name="night_theme_title">夜間佈景主題</string>
     <string name="show_channel_details">顯示頻道詳細資訊</string>
-    <string name="disable_media_tunneling_summary">如果您遇到黑畫面或影片播放停頓的現象，請停用媒體隧道</string>
+    <string name="disable_media_tunneling_summary">如果您遇到黑畫面或影片播放停頓的現象，請停用媒體隧道。</string>
     <string name="disable_media_tunneling_title">停用媒體隧道</string>
     <string name="metadata_privacy_internal">內部</string>
     <string name="metadata_privacy_private">私人</string>
     <string name="metadata_privacy_unlisted">未列出</string>
     <string name="metadata_privacy_public">公開</string>
-    <string name="metadata_thumbnail_url">縮圖 URL</string>
     <string name="metadata_host">主機</string>
     <string name="metadata_support">支援</string>
     <string name="metadata_language">語言</string>
@@ -625,7 +617,6 @@
     <string name="off">關閉</string>
     <string name="on">開啟</string>
     <string name="tablet_mode_title">平板電腦模式</string>
-    <string name="feed_toggle_show_played_items">顯示已檢視的項目</string>
     <string name="comments_are_disabled">留言已停用</string>
     <string name="dont_show">不要顯示</string>
     <string name="low_quality_smaller">低品質（較小）</string>
@@ -669,7 +660,6 @@
     <string name="detail_pinned_comment_view_description">釘選的留言</string>
     <string name="leak_canary_not_available">LeakCanary 無法使用</string>
     <string name="progressive_load_interval_exoplayer_default">ExoPlayer 預設值</string>
-    <string name="progressive_load_interval_summary">變更載入間隔大小（目前為 %s）。較低的值可能會提昇初始影片載入速度。變更需要重新啟動播放器</string>
     <string name="settings_category_player_notification_title">播放器通知</string>
     <string name="notifications">通知</string>
     <string name="loading_stream_details">正在載入串流詳細資訊……</string>
@@ -701,9 +691,6 @@
     <string name="no_video_streams_available_for_external_players">沒有可用於外部播放程式的視訊串流</string>
     <string name="select_quality_external_players">選取外部播放程式的畫質</string>
     <string name="progressive_load_interval_title">播放載入間隔大小</string>
-    <string name="feed_toggle_show_future_items">顯示未來項目</string>
-    <string name="feed_toggle_hide_future_items">隱藏未來項目</string>
-    <string name="feed_toggle_hide_played_items">隱藏已觀看的項目</string>
     <string name="faq_title">常見問題</string>
     <string name="faq">在網站上檢視</string>
     <string name="sort">排序</string>
@@ -720,4 +707,90 @@
     <string name="duplicate_in_playlist">變灰的播放清單已經包含此項目。</string>
     <string name="ignore_hardware_media_buttons_title">忽略硬體媒體鍵事件</string>
     <string name="ignore_hardware_media_buttons_summary">這很有用，舉例來說，若您正在使用物理按鍵壞掉的耳機</string>
+    <string name="remove_duplicates_title">移除重複的？</string>
+    <string name="feed_hide_streams_title">顯示以下串流</string>
+    <string name="feed_show_hide_streams">顯示/隱藏串流</string>
+    <string name="feed_show_watched">完全觀看</string>
+    <string name="feed_show_partially_watched">部份觀看</string>
+    <string name="feed_show_upcoming">即將到來</string>
+    <string name="remove_duplicates">移除重複的</string>
+    <string name="remove_duplicates_message">您想要移除所有在此播放清單中重複的串流？</string>
+    <string name="left_gesture_control_title">左側手勢動作</string>
+    <string name="right_gesture_control_title">右側手勢動作</string>
+    <string name="brightness">亮度</string>
+    <string name="volume">音量</string>
+    <string name="left_gesture_control_summary">為播放器畫面左側選擇手勢</string>
+    <string name="right_gesture_control_summary">為播放器畫面右側選擇手勢</string>
+    <string name="none">無</string>
+    <string name="prefer_original_audio_title">偏好原始音訊</string>
+    <string name="play_queue_audio_track">音訊：%s</string>
+    <string name="audio_track">音訊軌道</string>
+    <string name="audio_track_present_in_video">此串流應已存在音訊軌道</string>
+    <string name="select_audio_track_external_players">為外部播放程式選取音訊軌道</string>
+    <string name="unknown_audio_track">未知</string>
+    <string name="settings_category_exoplayer_title">ExoPlayer 設定</string>
+    <string name="use_exoplayer_decoder_fallback_title">使用 ExoPlayer 的解碼器汰退功能</string>
+    <string name="always_use_exoplayer_set_output_surface_workaround_title">一律使用 ExoPlayer 的視訊輸出表面設定解決方法</string>
+    <string name="audio_track_type_original">原始</string>
+    <string name="audio_track_type_dubbed">配音</string>
+    <string name="audio_track_type_descriptive">描述性</string>
+    <string name="progressive_load_interval_summary">變更漸進式內容的載入間隔大小（目前為 %s）。較低的值可能會加速初始載入速度</string>
+    <string name="prefer_descriptive_audio_title">偏好描述性的音訊</string>
+    <string name="prefer_descriptive_audio_summary">若可用，為視障人士選取帶有描述的音訊軌道</string>
+    <string name="prefer_original_audio_summary">無論語言都選取原始音訊軌道</string>
+    <string name="settings_category_exoplayer_summary">管理一些 ExoPlayer 設定。這些變更需要重新啟動播放程式才會生效</string>
+    <string name="use_exoplayer_decoder_fallback_summary">若您有解碼器初始化的問題，請啟用此選項，若主要的解碼器初始化失敗，其將會汰退至較低優先度的解碼器。這可能會導致播放效能比使用主要解碼器時差</string>
+    <string name="always_use_exoplayer_set_output_surface_workaround_summary">此解決方法是在發生表面變動時釋放並重新確認視訊編解碼器，而非直接將表面設定為編解碼器。ExoPlayer 已在部份有問題的裝置上使用了此設定，此設定僅對 Android 6 或更新版本有效。
+\n
+\n啟用此選項可以避免在切換目前視訊播放程式或切換到全螢幕時出現播放錯誤</string>
+    <string name="main_tabs_position_summary">將主分頁選擇器移動至底部</string>
+    <string name="main_tabs_position_title">主分頁位置</string>
+    <string name="audio_track_name">%1$s %2$s</string>
+    <string name="disable_media_tunneling_automatic_info">因為您的裝置型號已知不支援媒體隧道，因此已預設停用。</string>
+    <string name="no_streams">無串流</string>
+    <string name="no_live_streams">無直播串流</string>
+    <string name="channel_tab_videos">影片</string>
+    <string name="metadata_subscribers">訂閱者</string>
+    <string name="show_channel_tabs_summary">頻道頁面上顯示哪些分頁</string>
+    <string name="show_channel_tabs">頻道分頁</string>
+    <string name="channel_tab_shorts">短片</string>
+    <string name="loading_metadata_title">正在載入詮釋資料……</string>
+    <string name="feed_fetch_channel_tabs">擷取頻道分頁</string>
+    <string name="channel_tab_about">關於</string>
+    <string name="channel_tab_albums">專輯</string>
+    <string name="feed_fetch_channel_tabs_summary">更新 feed 時要擷取的分頁。若使用快速模式更新頻道，則此選項無效。</string>
+    <string name="channel_tab_playlists">播放清單</string>
+    <string name="channel_tab_tracks">軌道</string>
+    <string name="channel_tab_channels">頻道</string>
+    <string name="channel_tab_livestreams">直播</string>
+    <string name="toggle_screen_orientation">切換螢幕方向</string>
+    <string name="toggle_fullscreen">切換全螢幕</string>
+    <string name="next_stream">下一個串流</string>
+    <string name="open_play_queue">開啟播放佇列</string>
+    <string name="forward">快轉</string>
+    <string name="rewind">倒帶</string>
+    <string name="replay">重播</string>
+    <string name="play">播放</string>
+    <string name="more_options">更多選項</string>
+    <string name="duration">持續時間</string>
+    <string name="previous_stream">上一個串流</string>
+    <string name="image_quality_title">畫質</string>
+    <string name="image_quality_none">不要載入圖片</string>
+    <string name="metadata_thumbnails">影片縮圖</string>
+    <string name="question_mark">？</string>
+    <string name="image_quality_low">低品質</string>
+    <string name="metadata_avatars">大頭照</string>
+    <string name="metadata_subchannel_avatars">子頻道大頭照</string>
+    <string name="image_quality_high">高品質</string>
+    <string name="image_quality_medium">中等品質</string>
+    <string name="metadata_uploader_avatars">上傳者大頭照</string>
+    <string name="metadata_banners">橫幅</string>
+    <string name="image_quality_summary">選擇影像品質以及是否載入影像，以減少資料與記憶體使用。變更會清除記憶體中與磁碟上的影像快取 — %s</string>
+    <string name="share_playlist_with_list">分享 URL 清單</string>
+    <string name="share_playlist_with_titles">分享標題</string>
+    <string name="share_playlist_content_details">%1$s
+\n%2$s</string>
+    <string name="share_playlist">分享播放清單</string>
+    <string name="share_playlist_with_titles_message">分享包含播放清單名稱與影片標題等詳細資訊的播放清單，或是僅作為簡單的影片 URL 清單</string>
+    <string name="video_details_list_item">- %1$s：%2$s</string>
 </resources>

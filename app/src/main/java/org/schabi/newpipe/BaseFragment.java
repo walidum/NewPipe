@@ -12,7 +12,6 @@ import androidx.fragment.app.FragmentManager;
 
 import icepick.Icepick;
 import icepick.State;
-import leakcanary.AppWatcher;
 
 public abstract class BaseFragment extends Fragment {
     protected final String TAG = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
@@ -77,20 +76,33 @@ public abstract class BaseFragment extends Fragment {
     protected void onRestoreInstanceState(@NonNull final Bundle savedInstanceState) {
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        AppWatcher.INSTANCE.getObjectWatcher().watch(this);
-    }
-
     /*//////////////////////////////////////////////////////////////////////////
     // Init
     //////////////////////////////////////////////////////////////////////////*/
 
+    /**
+     * This method is called in {@link #onViewCreated(View, Bundle)} to initialize the views.
+     *
+     * <p>
+     * {@link #initListeners()} is called after this method to initialize the corresponding
+     * listeners.
+     * </p>
+     * @param rootView The inflated view for this fragment
+     *                 (provided by {@link #onViewCreated(View, Bundle)})
+     * @param savedInstanceState The saved state of this fragment
+ *                               (provided by {@link #onViewCreated(View, Bundle)})
+     */
     protected void initViews(final View rootView, final Bundle savedInstanceState) {
     }
 
+    /**
+     * Initialize the listeners for this fragment.
+     *
+     * <p>
+     * This method is called after {@link #initViews(View, Bundle)}
+     * in {@link #onViewCreated(View, Bundle)}.
+     * </p>
+     */
     protected void initListeners() {
     }
 

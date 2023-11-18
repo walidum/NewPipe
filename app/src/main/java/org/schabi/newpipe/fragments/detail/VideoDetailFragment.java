@@ -26,6 +26,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -53,9 +54,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.exoplayer2.PlaybackException;
@@ -63,7 +62,6 @@ import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
-import com.squareup.picasso.Callback;
 
 import org.schabi.newpipe.App;
 import org.schabi.newpipe.R;
@@ -74,6 +72,7 @@ import org.schabi.newpipe.error.ErrorInfo;
 import org.schabi.newpipe.error.ErrorUtil;
 import org.schabi.newpipe.error.ReCaptchaActivity;
 import org.schabi.newpipe.error.UserAction;
+import org.schabi.newpipe.extractor.Image;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ContentNotSupportedException;
@@ -86,11 +85,13 @@ import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.fragments.BackPressable;
 import org.schabi.newpipe.fragments.BaseStateFragment;
 import org.schabi.newpipe.fragments.EmptyFragment;
+import org.schabi.newpipe.fragments.MainFragment;
 import org.schabi.newpipe.fragments.list.comments.CommentsFragment;
 import org.schabi.newpipe.fragments.list.videos.RelatedItemsFragment;
 import org.schabi.newpipe.ktx.AnimationType;
 import org.schabi.newpipe.local.dialog.PlaylistDialog;
 import org.schabi.newpipe.local.history.HistoryRecordManager;
+import org.schabi.newpipe.local.playlist.LocalPlaylistFragment;
 import org.schabi.newpipe.player.Player;
 import org.schabi.newpipe.player.PlayerService;
 import org.schabi.newpipe.player.PlayerType;
@@ -110,11 +111,12 @@ import org.schabi.newpipe.util.ListHelper;
 import org.schabi.newpipe.util.Localization;
 import org.schabi.newpipe.util.NavigationHelper;
 import org.schabi.newpipe.util.PermissionHelper;
-import org.schabi.newpipe.util.PicassoHelper;
+import org.schabi.newpipe.util.image.PicassoHelper;
 import org.schabi.newpipe.util.StreamTypeUtil;
 import org.schabi.newpipe.util.ThemeHelper;
 import org.schabi.newpipe.util.external_communication.KoreUtils;
 import org.schabi.newpipe.util.external_communication.ShareUtils;
+import org.schabi.newpipe.util.PlayButtonHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -164,8 +166,12 @@ public final class VideoDetailFragment
     private boolean showRelatedItems;
     private boolean showDescription;
     private String selectedTabTag;
-    @AttrRes @NonNull final List<Integer> tabIcons = new ArrayList<>();
-    @StringRes @NonNull final List<Integer> tabContentDescriptions = new ArrayList<>();
+    @AttrRes
+    @NonNull
+    final List<Integer> tabIcons = new ArrayList<>();
+    @StringRes
+    @NonNull
+    final List<Integer> tabContentDescriptions = new ArrayList<>();
     private boolean tabSettingsChanged = false;
     private int lastAppBarVerticalOffset = Integer.MAX_VALUE; // prevents useless updates
 
@@ -469,10 +475,23 @@ public final class VideoDetailFragment
 
         binding.detailControlsBackground.setOnClickListener(v -> openBackgroundPlayer(false));
         binding.detailControlsPopup.setOnClickListener(v -> openPopupPlayer(false));
-        binding.detailControlsPlaylistAppend.setOnClickListener(makeOnClickListener(info ->
+        binding.detailControlsPlaylistAppend.setOnClickListener(makeOnClickListener(info -> {
+            if (getFM() != null && currentInfo != null) {
+                final Fragment fragment = getParentFragmentManager().
+                        findFragmentById(R.id.fragment_holder);
+
+                // commit previous pending changes to database
+                if (fragment instanceof LocalPlaylistFragment) {
+                    ((LocalPlaylistFragment) fragment).commitChanges();
+                } else if (fragment instanceof MainFragment) {
+                    ((MainFragment) fragment).commitPlaylistTabs();
+                }
+
                 disposables.add(PlaylistDialog.createCorrespondingDialog(requireContext(),
                         List.of(new StreamEntity(info)),
-                        dialog -> dialog.show(getParentFragmentManager(), TAG)))));
+                        dialog -> dialog.show(getParentFragmentManager(), TAG)));
+            }
+        }));
         binding.detailControlsDownload.setOnClickListener(v -> {
             if (PermissionHelper.checkStoragePermissions(activity,
                     PermissionHelper.DOWNLOAD_DIALOG_REQUEST_CODE)) {
@@ -481,7 +500,7 @@ public final class VideoDetailFragment
         });
         binding.detailControlsShare.setOnClickListener(makeOnClickListener(info ->
                 ShareUtils.shareText(requireContext(), info.getName(), info.getUrl(),
-                        info.getThumbnailUrl())));
+                        info.getThumbnails())));
         binding.detailControlsOpenInBrowser.setOnClickListener(makeOnClickListener(info ->
                 ShareUtils.openUrlInBrowser(requireContext(), info.getUrl())));
         binding.detailControlsPlayWithKodi.setOnClickListener(makeOnClickListener(info ->
@@ -534,9 +553,11 @@ public final class VideoDetailFragment
         }));
 
         binding.detailControlsBackground.setOnLongClickListener(makeOnLongClickListener(info ->
-                openBackgroundPlayer(true)));
+            openBackgroundPlayer(true)
+        ));
         binding.detailControlsPopup.setOnLongClickListener(makeOnLongClickListener(info ->
-                openPopupPlayer(true)));
+            openPopupPlayer(true)
+        ));
         binding.detailControlsDownload.setOnLongClickListener(makeOnLongClickListener(info ->
                 NavigationHelper.openDownloads(activity)));
 
@@ -619,8 +640,7 @@ public final class VideoDetailFragment
 
         final View.OnTouchListener controlsTouchListener = (view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
-                && PreferenceManager.getDefaultSharedPreferences(activity)
-                    .getBoolean(getString(R.string.show_hold_to_append_key), true)) {
+                    && PlayButtonHelper.shouldShowHoldToAppendTip(activity)) {
 
                 animate(binding.touchAppendDetail, true, 250, AnimationType.ALPHA, 0, () ->
                         animate(binding.touchAppendDetail, false, 1500, AnimationType.ALPHA, 1000));
@@ -645,27 +665,6 @@ public final class VideoDetailFragment
         } else {
             playerHolder.startService(false, this);
         }
-    }
-
-    private void initThumbnailViews(@NonNull final StreamInfo info) {
-        PicassoHelper.loadDetailsThumbnail(info.getThumbnailUrl()).tag(PICASSO_VIDEO_DETAILS_TAG)
-                .into(binding.detailThumbnailImageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        // nothing to do, the image was loaded correctly into the thumbnail
-                    }
-
-                    @Override
-                    public void onError(final Exception e) {
-                        showSnackBarError(new ErrorInfo(e, UserAction.LOAD_IMAGE,
-                                info.getThumbnailUrl(), info));
-                    }
-                });
-
-        PicassoHelper.loadAvatar(info.getSubChannelAvatarUrl()).tag(PICASSO_VIDEO_DETAILS_TAG)
-                .into(binding.detailSubChannelThumbnailView);
-        PicassoHelper.loadAvatar(info.getUploaderAvatarUrl()).tag(PICASSO_VIDEO_DETAILS_TAG)
-                .into(binding.detailUploaderThumbnailView);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -741,7 +740,7 @@ public final class VideoDetailFragment
         final boolean isPlayerStopped = !isPlayerAvailable() || player.isStopped();
         if (playQueueItem != null && isPlayerStopped) {
             updateOverlayData(playQueueItem.getTitle(),
-                    playQueueItem.getUploader(), playQueueItem.getThumbnailUrl());
+                    playQueueItem.getUploader(), playQueueItem.getThumbnails());
         }
     }
 
@@ -1042,20 +1041,10 @@ public final class VideoDetailFragment
             player.setRecovery();
         }
 
-        if (!useExternalAudioPlayer) {
-            openNormalBackgroundPlayer(append);
+        if (useExternalAudioPlayer) {
+            showExternalAudioPlaybackDialog();
         } else {
-            final List<AudioStream> audioStreams = getUrlAndNonTorrentStreams(
-                    currentInfo.getAudioStreams());
-            final int index = ListHelper.getDefaultAudioFormat(activity, audioStreams);
-
-            if (index == -1) {
-                Toast.makeText(activity, R.string.no_audio_streams_available_for_external_players,
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            startOnExternalPlayer(activity, currentInfo, audioStreams.get(index));
+            openNormalBackgroundPlayer(append);
         }
     }
 
@@ -1108,7 +1097,7 @@ public final class VideoDetailFragment
 
         if (PreferenceManager.getDefaultSharedPreferences(activity)
                 .getBoolean(this.getString(R.string.use_external_video_player_key), false)) {
-            showExternalPlaybackDialog();
+            showExternalVideoPlaybackDialog();
         } else {
             replaceQueueIfUserConfirms(this::openMainPlayer);
         }
@@ -1488,12 +1477,9 @@ public final class VideoDetailFragment
         binding.detailSubChannelThumbnailView.setVisibility(View.GONE);
 
         if (!isEmpty(info.getSubChannelName())) {
-            displayBothUploaderAndSubChannel(info, activity);
-        } else if (!isEmpty(info.getUploaderName())) {
-            displayUploaderAsSubChannel(info, activity);
+            displayBothUploaderAndSubChannel(info);
         } else {
-            binding.detailUploaderTextView.setVisibility(View.GONE);
-            binding.detailUploaderThumbnailView.setVisibility(View.GONE);
+            displayUploaderAsSubChannel(info);
         }
 
         final Drawable buddyDrawable =
@@ -1567,12 +1553,13 @@ public final class VideoDetailFragment
         binding.detailSecondaryControlPanel.setVisibility(View.GONE);
 
         checkUpdateProgressInfo(info);
-        initThumbnailViews(info);
+        PicassoHelper.loadDetailsThumbnail(info.getThumbnails()).tag(PICASSO_VIDEO_DETAILS_TAG)
+                .into(binding.detailThumbnailImageView);
         showMetaInfoInTextView(info.getMetaInfo(), binding.detailMetaInfoTextView,
                 binding.detailMetaInfoSeparator, disposables);
 
         if (!isPlayerAvailable() || player.isStopped()) {
-            updateOverlayData(info.getName(), info.getUploaderName(), info.getThumbnailUrl());
+            updateOverlayData(info.getName(), info.getUploaderName(), info.getThumbnails());
         }
 
         if (!info.getErrors().isEmpty()) {
@@ -1604,26 +1591,29 @@ public final class VideoDetailFragment
                 noVideoStreams ? R.drawable.ic_headset_shadow : R.drawable.ic_play_arrow_shadow);
     }
 
-    private void displayUploaderAsSubChannel(final StreamInfo info, final Context context) {
+    private void displayUploaderAsSubChannel(final StreamInfo info) {
         binding.detailSubChannelTextView.setText(info.getUploaderName());
         binding.detailSubChannelTextView.setVisibility(View.VISIBLE);
         binding.detailSubChannelTextView.setSelected(true);
 
         if (info.getUploaderSubscriberCount() > -1) {
             binding.detailUploaderTextView.setText(
-                    Localization.shortSubscriberCount(context, info.getUploaderSubscriberCount()));
+                    Localization.shortSubscriberCount(activity, info.getUploaderSubscriberCount()));
             binding.detailUploaderTextView.setVisibility(View.VISIBLE);
         } else {
             binding.detailUploaderTextView.setVisibility(View.GONE);
         }
+
+        PicassoHelper.loadAvatar(info.getUploaderAvatars()).tag(PICASSO_VIDEO_DETAILS_TAG)
+                .into(binding.detailSubChannelThumbnailView);
+        binding.detailSubChannelThumbnailView.setVisibility(View.VISIBLE);
+        binding.detailUploaderThumbnailView.setVisibility(View.GONE);
     }
 
-    private void displayBothUploaderAndSubChannel(final StreamInfo info, final Context context) {
+    private void displayBothUploaderAndSubChannel(final StreamInfo info) {
         binding.detailSubChannelTextView.setText(info.getSubChannelName());
         binding.detailSubChannelTextView.setVisibility(View.VISIBLE);
         binding.detailSubChannelTextView.setSelected(true);
-
-        binding.detailSubChannelThumbnailView.setVisibility(View.VISIBLE);
 
         final StringBuilder subText = new StringBuilder();
         if (!isEmpty(info.getUploaderName())) {
@@ -1635,7 +1625,7 @@ public final class VideoDetailFragment
                 subText.append(Localization.DOT_SEPARATOR);
             }
             subText.append(
-                    Localization.shortSubscriberCount(context, info.getUploaderSubscriberCount()));
+                    Localization.shortSubscriberCount(activity, info.getUploaderSubscriberCount()));
         }
 
         if (subText.length() > 0) {
@@ -1645,6 +1635,13 @@ public final class VideoDetailFragment
         } else {
             binding.detailUploaderTextView.setVisibility(View.GONE);
         }
+
+        PicassoHelper.loadAvatar(info.getSubChannelAvatars()).tag(PICASSO_VIDEO_DETAILS_TAG)
+                .into(binding.detailSubChannelThumbnailView);
+        binding.detailSubChannelThumbnailView.setVisibility(View.VISIBLE);
+        PicassoHelper.loadAvatar(info.getUploaderAvatars()).tag(PICASSO_VIDEO_DETAILS_TAG)
+                .into(binding.detailUploaderThumbnailView);
+        binding.detailUploaderThumbnailView.setVisibility(View.VISIBLE);
     }
 
     public void openDownloadDialog() {
@@ -1817,7 +1814,7 @@ public final class VideoDetailFragment
             return;
         }
 
-        updateOverlayData(info.getName(), info.getUploaderName(), info.getThumbnailUrl());
+        updateOverlayData(info.getName(), info.getUploaderName(), info.getThumbnails());
         if (currentInfo != null && info.getUrl().equals(currentInfo.getUrl())) {
             return;
         }
@@ -1846,7 +1843,7 @@ public final class VideoDetailFragment
         if (currentInfo != null) {
             updateOverlayData(currentInfo.getName(),
                     currentInfo.getUploaderName(),
-                    currentInfo.getThumbnailUrl());
+                    currentInfo.getThumbnails());
         }
         updateOverlayPlayQueueButtonVisibility();
     }
@@ -1928,17 +1925,15 @@ public final class VideoDetailFragment
             return;
         }
 
-        final var window = activity.getWindow();
-        final var windowInsetsController = WindowCompat.getInsetsController(window,
-                window.getDecorView());
-
-        WindowCompat.setDecorFitsSystemWindows(window, true);
-        windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat
-                .BEHAVIOR_SHOW_BARS_BY_TOUCH);
-        windowInsetsController.show(WindowInsetsCompat.Type.systemBars());
-
-        window.setStatusBarColor(ThemeHelper.resolveColorFromAttr(requireContext(),
-                android.R.attr.colorPrimary));
+        // Prevent jumping of the player on devices with cutout
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            activity.getWindow().getAttributes().layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT;
+        }
+        activity.getWindow().getDecorView().setSystemUiVisibility(0);
+        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        activity.getWindow().setStatusBarColor(ThemeHelper.resolveColorFromAttr(
+                requireContext(), android.R.attr.colorPrimary));
     }
 
     private void hideSystemUi() {
@@ -1950,19 +1945,30 @@ public final class VideoDetailFragment
             return;
         }
 
-        final var window = activity.getWindow();
-        final var windowInsetsController = WindowCompat.getInsetsController(window,
-                window.getDecorView());
-
-        WindowCompat.setDecorFitsSystemWindows(window, false);
-        windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat
-                .BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
-
-        if (DeviceUtils.isInMultiWindow(activity) || isFullscreen()) {
-            window.setStatusBarColor(Color.TRANSPARENT);
-            window.setNavigationBarColor(Color.TRANSPARENT);
+        // Prevent jumping of the player on devices with cutout
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            activity.getWindow().getAttributes().layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
         }
+        int visibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+        // In multiWindow mode status bar is not transparent for devices with cutout
+        // if I include this flag. So without it is better in this case
+        final boolean isInMultiWindow = DeviceUtils.isInMultiWindow(activity);
+        if (!isInMultiWindow) {
+            visibility |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        }
+        activity.getWindow().getDecorView().setSystemUiVisibility(visibility);
+
+        if (isInMultiWindow || isFullscreen()) {
+            activity.getWindow().setStatusBarColor(Color.TRANSPARENT);
+            activity.getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        }
+        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     // Listener implementation
@@ -2006,7 +2012,10 @@ public final class VideoDetailFragment
             restoreDefaultBrightness();
         } else {
             // Do not restore if user has disabled brightness gesture
-            if (!PlayerHelper.isBrightnessGestureEnabled(activity)) {
+            if (!PlayerHelper.getActionForRightGestureSide(activity)
+                    .equals(getString(R.string.brightness_control_key))
+                    && !PlayerHelper.getActionForLeftGestureSide(activity)
+                    .equals(getString(R.string.brightness_control_key))) {
                 return;
             }
             // Restore already saved brightness level
@@ -2099,10 +2108,11 @@ public final class VideoDetailFragment
                 .setPositiveButton(R.string.ok, (dialog, which) -> {
                     onAllow.run();
                     dialog.dismiss();
-                }).show();
+                })
+                .show();
     }
 
-    private void showExternalPlaybackDialog() {
+    private void showExternalVideoPlaybackDialog() {
         if (currentInfo == null) {
             return;
         }
@@ -2149,6 +2159,43 @@ public final class VideoDetailFragment
         builder.show();
     }
 
+    private void showExternalAudioPlaybackDialog() {
+        if (currentInfo == null) {
+            return;
+        }
+
+        final List<AudioStream> audioStreams = getUrlAndNonTorrentStreams(
+                currentInfo.getAudioStreams());
+        final List<AudioStream> audioTracks =
+                ListHelper.getFilteredAudioStreams(activity, audioStreams);
+
+        if (audioTracks.isEmpty()) {
+            Toast.makeText(activity, R.string.no_audio_streams_available_for_external_players,
+                    Toast.LENGTH_SHORT).show();
+        } else if (audioTracks.size() == 1) {
+            startOnExternalPlayer(activity, currentInfo, audioTracks.get(0));
+        } else {
+            final int selectedAudioStream =
+                    ListHelper.getDefaultAudioFormat(activity, audioTracks);
+            final CharSequence[] trackNames = audioTracks.stream()
+                    .map(audioStream -> Localization.audioTrackName(activity, audioStream))
+                    .toArray(CharSequence[]::new);
+
+            new AlertDialog.Builder(activity)
+                    .setTitle(R.string.select_audio_track_external_players)
+                    .setNeutralButton(R.string.open_in_browser, (dialog, i) ->
+                            ShareUtils.openUrlInBrowser(requireActivity(), url))
+                    .setSingleChoiceItems(trackNames, selectedAudioStream, null)
+                    .setNegativeButton(R.string.cancel, null)
+                    .setPositiveButton(R.string.ok, (dialog, i) -> {
+                        final int index = ((AlertDialog) dialog).getListView()
+                                .getCheckedItemPosition();
+                        startOnExternalPlayer(activity, currentInfo, audioTracks.get(index));
+                    })
+                    .show();
+        }
+    }
+
     /*
      * Remove unneeded information while waiting for a next task
      * */
@@ -2161,7 +2208,7 @@ public final class VideoDetailFragment
         playerHolder.stopService();
         setInitialData(0, null, "", null);
         currentInfo = null;
-        updateOverlayData(null, null, null);
+        updateOverlayData(null, null, List.of());
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -2343,11 +2390,11 @@ public final class VideoDetailFragment
 
     private void updateOverlayData(@Nullable final String overlayTitle,
                                    @Nullable final String uploader,
-                                   @Nullable final String thumbnailUrl) {
+                                   @NonNull final List<Image> thumbnails) {
         binding.overlayTitleTextView.setText(isEmpty(overlayTitle) ? "" : overlayTitle);
         binding.overlayChannelTextView.setText(isEmpty(uploader) ? "" : uploader);
         binding.overlayThumbnail.setImageDrawable(null);
-        PicassoHelper.loadDetailsThumbnail(thumbnailUrl).tag(PICASSO_VIDEO_DETAILS_TAG)
+        PicassoHelper.loadDetailsThumbnail(thumbnails).tag(PICASSO_VIDEO_DETAILS_TAG)
                 .into(binding.overlayThumbnail);
     }
 
